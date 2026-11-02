@@ -21,7 +21,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: '8.3'
 
       - name: Check if composer.json exists
         id: check_files
@@ -33,6 +33,15 @@ jobs:
         if: steps.check_files.outputs.files_exists == 'true'
         run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies and build assets
+        run: |
+          npm ci || npm install
+          npm run build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -67,4 +76,3 @@ jobs:
           app-name: 'web-praktikum-jiyudanjikiake'
           slot-name: 'Production'
           package: .
-          
